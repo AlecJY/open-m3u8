@@ -15,7 +15,7 @@ class ExtLineParser implements LineParser {
     }
 
     @Override
-    public void parse(String line, ParseState state) throws ParseException {
+    public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
         if (mTagParser.hasData()) {
             if (line.indexOf(Constants.EXT_TAG_END) != mTagParser.getTag().length() + 1) {
                 throw ParseException.create(ParseExceptionType.MISSING_EXT_TAG_SEPARATOR, mTagParser.getTag(), line);
@@ -35,7 +35,7 @@ class ExtLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
             if (state.isExtended()) {
                 throw ParseException.create(ParseExceptionType.MULTIPLE_EXT_TAG_INSTANCES, getTag(), line);
             }
@@ -56,7 +56,7 @@ class ExtLineParser implements LineParser {
         }
         
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
             state.unknownTags.add(line);
         }
     };
@@ -75,8 +75,8 @@ class ExtLineParser implements LineParser {
         }
         
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_VERSION_PATTERN, line, getTag());
 
@@ -129,15 +129,15 @@ class ExtLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
             if (state.startData != null) {
                 throw ParseException.create(ParseExceptionType.MULTIPLE_EXT_TAG_INSTANCES, getTag(), line);
             }
 
             final StartData.Builder builder = new StartData.Builder();
 
-            lineParser.parse(line, state);
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            lineParser.parse(line, state, ignoreUnknownAttributes);
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
             state.startData = builder.build();
         }
     };

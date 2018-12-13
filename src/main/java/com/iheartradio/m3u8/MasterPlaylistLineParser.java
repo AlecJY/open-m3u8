@@ -20,13 +20,13 @@ class MasterPlaylistLineParser implements LineParser {
     }
 
     @Override
-    public void parse(String line, ParseState state) throws ParseException {
+    public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
         if (state.isMedia()) {
             throw ParseException.create(ParseExceptionType.MASTER_IN_MEDIA, mTagParser.getTag());
         }
 
         state.setMaster();
-        mLineParser.parse(line, state);
+        mLineParser.parse(line, state, ignoreUnknownAttributes);
     }
 
     // master playlist tags
@@ -187,13 +187,13 @@ class MasterPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            mLineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            mLineParser.parse(line, state, ignoreUnknownAttributes);
 
             final MediaData.Builder builder = new MediaData.Builder();
 
             state.getMaster().clearMediaDataState();
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
             state.getMaster().mediaData.add(builder.build());
         }
     };
@@ -222,12 +222,12 @@ class MasterPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            mLineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            mLineParser.parse(line, state, ignoreUnknownAttributes);
 
             final IFrameStreamInfo.Builder builder = new IFrameStreamInfo.Builder();
 
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
             state.getMaster().iFramePlaylists.add(builder.build());
         }
     };
@@ -272,12 +272,12 @@ class MasterPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            mLineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            mLineParser.parse(line, state, ignoreUnknownAttributes);
 
             final StreamInfo.Builder builder = new StreamInfo.Builder();
 
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
             state.getMaster().streamInfo = builder.build();
         }
     };

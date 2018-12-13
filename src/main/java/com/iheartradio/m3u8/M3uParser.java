@@ -28,7 +28,7 @@ class M3uParser extends BaseM3uParser {
                 if (line.length() == 0 || isComment(line)) {
                     continue;
                 } else {
-                    trackLineParser.parse(line, state);
+                    trackLineParser.parse(line, state, false);
                 }
             }
 

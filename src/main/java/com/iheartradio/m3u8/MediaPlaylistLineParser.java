@@ -23,13 +23,13 @@ class MediaPlaylistLineParser implements LineParser {
     }
 
     @Override
-    public void parse(String line, ParseState state) throws ParseException {
+    public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
         if (state.isMaster()) {
             throw ParseException.create(ParseExceptionType.MEDIA_IN_MASTER, tagParser.getTag());
         }
 
         state.setMedia();
-        lineParser.parse(line, state);
+        lineParser.parse(line, state, ignoreUnknownAttributes);
     }
 
     // media playlist tags
@@ -48,8 +48,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             ParseUtil.match(Constants.EXT_X_ENDLIST_PATTERN, line, getTag());
             state.getMedia().endOfList = true;
@@ -70,8 +70,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
             
             ParseUtil.match(Constants.EXT_X_I_FRAMES_ONLY_PATTERN, line, getTag());
             
@@ -97,8 +97,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
         
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_PLAYLIST_TYPE_PATTERN, line, getTag());
 
@@ -125,8 +125,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
         
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_PROGRAM_DATE_TIME_PATTERN, line, getTag());
 
@@ -169,11 +169,11 @@ class MediaPlaylistLineParser implements LineParser {
         }
         
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final StartData.Builder builder = new StartData.Builder();
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
             final StartData startData = builder.build();
 
             state.getMedia().setStartData(startData);
@@ -195,8 +195,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_TARGETDURATION_PATTERN, line, getTag());
 
@@ -222,8 +222,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_MEDIA_SEQUENCE_PATTERN, line, getTag());
 
@@ -249,8 +249,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             // deprecated
         }
@@ -272,8 +272,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final Matcher matcher = ParseUtil.match(Constants.EXTINF_PATTERN, line, getTag());
 
@@ -295,8 +295,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_DISCONTINUITY_PATTERN, line, getTag());
             state.getMedia().hasDiscontinuity = true;
         }
@@ -378,14 +378,14 @@ class MediaPlaylistLineParser implements LineParser {
         }
         
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final EncryptionData.Builder builder = new EncryptionData.Builder()
                     .withKeyFormat(Constants.DEFAULT_KEY_FORMAT)
                     .withKeyFormatVersions(Constants.DEFAULT_KEY_FORMAT_VERSIONS);
 
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
 
             final EncryptionData encryptionData = builder.build();
 
@@ -433,12 +433,12 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
 
             final MapInfo.Builder builder = new MapInfo.Builder();
 
-            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag());
+            ParseUtil.parseAttributes(line, builder, state, HANDLERS, getTag(), ignoreUnknownAttributes);
             state.getMedia().mapInfo = builder.build();
         }
     };
@@ -457,8 +457,8 @@ class MediaPlaylistLineParser implements LineParser {
         }
 
         @Override
-        public void parse(String line, ParseState state) throws ParseException {
-            lineParser.parse(line, state);
+        public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) throws ParseException {
+            lineParser.parse(line, state, ignoreUnknownAttributes);
             final Matcher matcher = ParseUtil.match(Constants.EXT_X_BYTERANGE_PATTERN, line, getTag());
             state.getMedia().byteRange = ParseUtil.matchByteRange(matcher);
         }

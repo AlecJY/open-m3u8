@@ -69,15 +69,15 @@ class ExtendedM3uParser extends BaseM3uParser {
                             }
                         }
 
-                        tagParser.parse(line, state);
+                        tagParser.parse(line, state, mParsingMode.ignoreUnknownAttributes);
 
                         if (state.isMedia() && state.getMedia().endOfList) {
                             break;
                         }
                     } else if (state.isMaster()) {
-                        playlistParser.parse(line, state);
+                        playlistParser.parse(line, state, mParsingMode.ignoreUnknownAttributes);
                     } else if (state.isMedia()) {
-                        trackLineParser.parse(line, state);
+                        trackLineParser.parse(line, state, mParsingMode.ignoreUnknownAttributes);
                     } else {
                         throw ParseException.create(ParseExceptionType.UNKNOWN_PLAYLIST_TYPE, line);
                     }

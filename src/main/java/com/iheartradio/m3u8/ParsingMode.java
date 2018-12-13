@@ -6,6 +6,7 @@ public class ParsingMode {
     public static final ParsingMode LENIENT = new Builder()
             .allowUnknownTags()
             .allowNegativeNumbers()
+            .ignoreUnknownAttributes()
             .build();
 
     /**
@@ -18,14 +19,18 @@ public class ParsingMode {
      */
     public final boolean allowNegativeNumbers;
 
-    private ParsingMode(final boolean allowUnknownTags, final boolean allowNegativeNumbers) {
+    public final boolean ignoreUnknownAttributes;
+
+    private ParsingMode(final boolean allowUnknownTags, final boolean allowNegativeNumbers, final boolean ignoreUnknownAttributes) {
         this.allowUnknownTags = allowUnknownTags;
         this.allowNegativeNumbers = allowNegativeNumbers;
+        this.ignoreUnknownAttributes = ignoreUnknownAttributes;
     }
 
     public static class Builder {
         private boolean mAllowUnknownTags = false;
         private boolean mAllowNegativeNumbers = false;
+        private boolean mIngoreUnknownAttributes = false;
 
         /**
          * Call to prevent throwing an exception when parsing unrecognized tags.
@@ -43,8 +48,13 @@ public class ParsingMode {
             return this;
         }
 
+        public Builder ignoreUnknownAttributes() {
+            mIngoreUnknownAttributes = true;
+            return this;
+        }
+
         public ParsingMode build() {
-            return new ParsingMode(mAllowUnknownTags, mAllowNegativeNumbers);
+            return new ParsingMode(mAllowUnknownTags, mAllowNegativeNumbers, mIngoreUnknownAttributes);
         }
     }
 }

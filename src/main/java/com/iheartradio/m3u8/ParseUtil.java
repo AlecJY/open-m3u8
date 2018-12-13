@@ -164,12 +164,14 @@ final class ParseUtil {
         return matcher;
     }
 
-    public static <T> void parseAttributes(String line, T builder, ParseState state, Map<String, ? extends AttributeParser<T>> handlers, String tag) throws ParseException {
+    public static <T> void parseAttributes(String line, T builder, ParseState state, Map<String, ? extends AttributeParser<T>> handlers, String tag, boolean ignoreUnknownAttributes) throws ParseException {
         for (Attribute attribute : parseAttributeList(line, tag)) {
             if (handlers.containsKey(attribute.name)) {
                 handlers.get(attribute.name).parse(attribute, builder, state);
             } else {
-                throw ParseException.create(ParseExceptionType.INVALID_ATTRIBUTE_NAME, tag, line);
+                if (!ignoreUnknownAttributes) {
+                    throw ParseException.create(ParseExceptionType.INVALID_ATTRIBUTE_NAME, tag, line);
+                }
             }
         }
     }

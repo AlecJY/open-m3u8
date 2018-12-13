@@ -4,7 +4,7 @@ import com.iheartradio.m3u8.data.PlaylistData;
 
 class PlaylistLineParser implements LineParser {
     @Override
-    public void parse(String line, ParseState state) {
+    public void parse(String line, ParseState state, boolean ignoreUnknownAttributes) {
         final PlaylistData.Builder builder = new PlaylistData.Builder();
         final MasterParseState masterState = state.getMaster();
 
